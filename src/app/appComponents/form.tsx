@@ -1,26 +1,27 @@
 "use client";
 import React, { useState } from "react";
+import { useRouter } from "next/navigation";
+import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
   AlertDialog,
   AlertDialogAction,
-  AlertDialogCancel,
   AlertDialogContent,
-  AlertDialogDescription,
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-  AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import { ListBlobResult, list } from "@vercel/blob";
 
 export default function UploadForm() {
   const [file, setFile] = useState<File | null>(null);
   const [showModal, setShowModal] = useState<boolean>(false);
+  const [preview, setPreview] = useState<string | null>(null);
+  const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log(file?.size, "size");
     if (file && file?.size > 1048576) {
       console.log("true");
       setShowModal(true);
@@ -36,10 +37,6 @@ export default function UploadForm() {
       try {
         const response = await fetch("/api/file", {
           method: "POST",
-          // headers: {
-          //   "Content-Type": "application/json", // Specify content type
-          //   // Add any other headers as needed
-          // },
           body: formData,
         });
 
@@ -48,6 +45,10 @@ export default function UploadForm() {
         }
 
         const data = await response.json(); // Parse response as JSON
+        setPreview(data.url);
+
+        const blobData = await list({ token: "BLOB_READ_WRITE_TOKEN" });
+        console.log(blobData, "blobs");
 
         // Handle successful response
         console.log("Success:", data);
@@ -56,17 +57,27 @@ export default function UploadForm() {
         console.error("Error:", error);
       }
     }
+    router.push("/list");
   };
 
   return (
     <div>
-      <form onSubmit={handleSubmit}>
+      <form
+        onSubmit={handleSubmit}
+        className="flex bg-pink-300 justify-center item-center gap-4 mt-4 ml-8"
+      >
         <Input
           type="file"
           onChange={(e) => setFile(e.target.files?.item(0) || null)}
         />
         <Button type="submit">Upload</Button>
       </form>
+
+      {preview && (
+        <div className="flex">
+          <Image src={preview} alt="test" width={200} height={200} />
+        </div>
+      )}
 
       {
         <AlertDialog open={showModal}>
