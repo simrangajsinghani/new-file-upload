@@ -8,7 +8,7 @@ root {
   height: 100vh;
 }
 
-/* @layer base {
+@layer base {
   :root {
     --background: 0 0% 100%;
     --foreground: 222.2 84% 4.9%;
@@ -73,10 +73,10 @@ root {
 }
 
 @layer base {
-  * {
+  /* * {
     @apply border-border;
-  }
-  body {
+  } */
+  /* body {
     @apply bg-background text-foreground;
-  }
-} */
+  } */
+}
