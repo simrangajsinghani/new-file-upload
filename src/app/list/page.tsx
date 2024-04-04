@@ -13,7 +13,7 @@ export default async function AllFilesList() {
             key={blob.pathname}
             className="flex flex-col mt-4 justify-center items-center"
           >
-            <a href={blob.url} target="_blank">
+            <a href={blob.downloadUrl} target="_blank">
               <Image
                 src={blob.url}
                 alt={blob.pathname}

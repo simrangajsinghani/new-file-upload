@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
@@ -12,21 +12,21 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import { ListBlobResult, list } from "@vercel/blob";
 
 export default function UploadForm() {
   const [file, setFile] = useState<File | null>(null);
   const [showModal, setShowModal] = useState<boolean>(false);
   const [preview, setPreview] = useState<string | null>(null);
+  const [loading, setLoading] = useState<boolean>(false);
+
   const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent) => {
+    setLoading(true);
     e.preventDefault();
     if (file && file?.size > 1048576) {
-      console.log("true");
       setShowModal(true);
     } else {
-      console.log(showModal, "false");
       const formData = new FormData();
       formData.append("file", file as Blob);
       // const response = await fetch("/api/file", {
@@ -46,9 +46,7 @@ export default function UploadForm() {
 
         const data = await response.json(); // Parse response as JSON
         setPreview(data.url);
-
-        const blobData = await list({ token: "BLOB_READ_WRITE_TOKEN" });
-        console.log(blobData, "blobs");
+        setLoading(false);
 
         // Handle successful response
         console.log("Success:", data);
@@ -62,6 +60,7 @@ export default function UploadForm() {
 
   return (
     <div>
+      {/* {loading && <Progress value={progress} className="w-[60%]" />} */}
       <form
         onSubmit={handleSubmit}
         className="flex bg-pink-300 justify-center item-center gap-4 mt-4 ml-8"
@@ -70,15 +69,13 @@ export default function UploadForm() {
           type="file"
           onChange={(e) => setFile(e.target.files?.item(0) || null)}
         />
-        <Button type="submit">Upload</Button>
+        <Button type="submit">{loading ? "Uploading..." : "Upload"}</Button>
       </form>
-
-      {preview && (
+      {/* {preview && (
         <div className="flex">
           <Image src={preview} alt="test" width={200} height={200} />
         </div>
-      )}
-
+      )} */}
       {
         <AlertDialog open={showModal}>
           <AlertDialogContent>
