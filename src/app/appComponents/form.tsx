@@ -10,7 +10,7 @@ export default function UploadForm() {
     e.preventDefault();
     const formData = new FormData();
     formData.append("file", file as Blob);
-    const response = await fetch("https://example.com", {
+    const response = await fetch("/api/file", {
       method: "POST",
       body: formData,
     });
