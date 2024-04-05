@@ -15,3 +15,14 @@ export async function POST(req: Request) {
 
   return Response.json(blob);
 }
+
+import { list } from "@vercel/blob";
+
+export const config = {
+  runtime: "edge",
+};
+
+export async function GET(request: Request) {
+  const { blobs } = await list();
+  return NextResponse.json(blobs);
+}
