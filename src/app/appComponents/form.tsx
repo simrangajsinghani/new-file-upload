@@ -20,22 +20,14 @@ export default function UploadForm() {
   const [loading, setLoading] = useState<boolean>(false);
   const [blob, setBlob] = useState([]);
 
-  // useEffect(() => {
-  //   // Retrieve file value from local storage on component mount
-  //   const storedFile = localStorage.getItem("file");
-  //   if (storedFile) {
-  //     setFile(JSON.parse(storedFile));
-  //   }
-  // }, []);
-
   const handleSubmit = async (e: React.FormEvent) => {
     setLoading(true);
-    setShowModal(false); // Stop loading when modal appears
+    setShowModal(false);
 
     e.preventDefault();
     if (file && file?.size > 1048576) {
       setShowModal(true);
-      setLoading(false); // Stop loading when modal appears
+      setLoading(false);
     } else {
       const formData = new FormData();
       formData.append("file", file as Blob);
